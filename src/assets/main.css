@@ -1,0 +1,35 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+html {
+  height: 100%;
+}
+body {
+  min-height: 100vh;
+  line-height: 1.6;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans',
+    'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-reduced-motion) {
+  * {
+    transition: none !important;
+  }
+}
+
+#app {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  margin: 0 auto;
+  font-weight: normal;
+}

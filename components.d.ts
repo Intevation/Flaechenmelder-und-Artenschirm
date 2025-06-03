@@ -8,7 +8,8 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    FilterSidebar: typeof import('./src/components/icons/FilterSidebar.vue')['default']
+    FilterSidebar: typeof import('./src/components/FilterSidebar.vue')['default']
+    PopUp: typeof import('./src/components/PopUp.vue')['default']
     Sidebar: typeof import('./src/components/icons/Sidebar.vue')['default']
   }
 }

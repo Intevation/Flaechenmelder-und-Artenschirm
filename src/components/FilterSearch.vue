@@ -2,7 +2,9 @@
 import { computed, ref } from 'vue'
 import type { Ref } from 'vue'
 import { X } from 'lucide-vue-next'
+import { useMapStore } from '@/stores/map.ts'
 
+const mapStore = useMapStore()
 const props = defineProps<{
   options: Array<string>
   includedFields?: Array<string>
@@ -13,14 +15,13 @@ const showSuggestions = ref(false)
 const isListBoxHovered = ref(false)
 const focusedSuggestionIndex = ref(-1)
 const inputValue = ref('')
-const activeFilters: Ref<Array<string>> = ref([])
 const suggestions = computed<Array<string>>(() => {
   if (showSuggestions.value === false) return []
   if (inputValue.value === '') return []
   return props.options.filter((opt: string) => {
     return (
       opt.toLowerCase().includes(inputValue.value.toLowerCase()) &&
-      !activeFilters.value.includes(opt)
+      !mapStore.artenFilters.includes(opt)
     )
   })
 })
@@ -69,25 +70,30 @@ const resetInput = () => {
 }
 
 const applyFilters = () => {
-  // TODO
+  mapStore.applyFilters()
 }
 
 const selectSuggestion = (index: number) => {
-  activeFilters.value.push(suggestions.value[index])
+  mapStore.artenFilters.push(suggestions.value[index])
   resetInput()
   focusedSuggestionIndex.value = -1
   applyFilters()
 }
 
 const removeFilter = (index: number) => {
-  activeFilters.value.splice(index, 1)
+  mapStore.artenFilters.splice(index, 1)
+  applyFilters()
 }
 </script>
 
 <template>
   <div id="filter-search">
     <div id="active-filters">
-      <div v-for="(filter, index) in activeFilters" v-bind:key="`filter-${filter}`" class="filter">
+      <div
+        v-for="(filter, index) in mapStore.artenFilters"
+        v-bind:key="`filter-${filter}`"
+        class="filter"
+      >
         <span>{{ filter }}</span>
         <button
           :title="`Filter entfernen: ${filter}`"

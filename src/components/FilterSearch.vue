@@ -5,9 +5,11 @@ import { X } from 'lucide-vue-next'
 import { useMapStore } from '@/stores/map.ts'
 
 const mapStore = useMapStore()
+const emit = defineEmits(['updatedFilters'])
 const props = defineProps<{
+  activeFilters: Array<string>
+  label: string
   options: Array<string>
-  includedFields?: Array<string>
   placeholder?: string
 }>()
 
@@ -21,7 +23,7 @@ const suggestions = computed<Array<string>>(() => {
   return props.options.filter((opt: string) => {
     return (
       opt.toLowerCase().includes(inputValue.value.toLowerCase()) &&
-      !mapStore.artenFilters.includes(opt)
+      !props.activeFilters.includes(opt)
     )
   })
 })
@@ -74,23 +76,25 @@ const applyFilters = () => {
 }
 
 const selectSuggestion = (index: number) => {
-  mapStore.artenFilters.push(suggestions.value[index])
+  emit('updatedFilters', [...props.activeFilters, suggestions.value[index]])
   resetInput()
   focusedSuggestionIndex.value = -1
   applyFilters()
 }
 
 const removeFilter = (index: number) => {
-  mapStore.artenFilters.splice(index, 1)
+  const newFilters = [...props.activeFilters]
+  newFilters.splice(index, 1)
+  emit('updatedFilters', newFilters)
   applyFilters()
 }
 </script>
 
 <template>
-  <div id="filter-search">
-    <div id="active-filters">
+  <div class="filter-search">
+    <div class="active-filters">
       <div
-        v-for="(filter, index) in mapStore.artenFilters"
+        v-for="(filter, index) in props.activeFilters"
         v-bind:key="`filter-${filter}`"
         class="filter"
       >
@@ -108,13 +112,13 @@ const removeFilter = (index: number) => {
       </div>
     </div>
     <div class="combobox-container">
-      <label for="searchbar-input">Nach Arten filtern:</label>
+      <label for="searchbar-input">{{ props.label }}</label>
       <div
         :class="`combobox ${showSuggestions ? 'open' : ''} ${showSuggestions && focusedSuggestionIndex === -1 ? 'focused' : ''}`"
       >
         <input
-          id="searchbar-input"
-          placeholder="Trivialer oder lateinischer Name"
+          class="searchbar-input"
+          :placeholder="props.placeholder"
           type="text"
           role="combobox"
           v-model="inputValue"
@@ -141,7 +145,7 @@ const removeFilter = (index: number) => {
         />
         <button
           v-if="inputValue?.length > 0"
-          id="reset-search-button"
+          class="reset-search-button"
           tabIndex="-1"
           aria-label="Reset search"
           aria-expanded="false"
@@ -161,7 +165,7 @@ const removeFilter = (index: number) => {
               isListBoxHovered = false
             }
           "
-          id="search-listbox"
+          class="search-listbox"
           role="listbox"
           aria-label="Suggestions"
         >
@@ -175,7 +179,7 @@ const removeFilter = (index: number) => {
                   selectSuggestion(index)
                 }
               "
-              :id="suggestion"
+              :id="`${index}-${suggestion}`"
               role="option"
             >
               {{ suggestion }}
@@ -188,13 +192,13 @@ const removeFilter = (index: number) => {
 </template>
 
 <style scoped>
-#filter-search {
+.filter-search {
   display: flex;
   flex-direction: column;
   gap: 5pt;
 }
 
-#active-filters {
+.active-filters {
   display: flex;
   flex-direction: column;
   gap: 2pt;
@@ -272,18 +276,8 @@ const removeFilter = (index: number) => {
   border: none;
 }
 
-#reset-search-button {
+.reset-search-button {
   color: var(--accent-dark);
-}
-
-#search-button {
-  background-color: var(--accent);
-  color: white;
-}
-
-#search-button:hover {
-  background-color: var(--accent-dark);
-  color: white;
 }
 
 [role='listbox'].focus [role='option'][aria-selected='true'],

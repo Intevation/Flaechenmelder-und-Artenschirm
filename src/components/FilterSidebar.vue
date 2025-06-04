@@ -51,7 +51,17 @@ const toggleLayer = (layer: Layer) => {
             "
           ></span>
         </label>
-        <FilterSearch :options="mapStore.artenschirmOptions" />
+        <FilterSearch
+          @updatedFilters="
+            (event) => {
+              mapStore.artenFilters = event
+            }
+          "
+          :activeFilters="mapStore.artenFilters"
+          label="Nach Arten filtern:"
+          :options="mapStore.artenschirmOptions"
+          placeholder="Trivialer oder lateinischer Name"
+        />
         <label>
           <input type="checkbox" />
           <span>Filter 1</span>

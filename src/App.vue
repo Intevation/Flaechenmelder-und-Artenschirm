@@ -9,6 +9,10 @@ import '@leaflet/dist/leaflet.css'
 
 const mapStore = useMapStore()
 
+type Art = {
+  [k: string]: Array<string>
+}
+
 onMounted(() => {
   const map = new Map('map', {
     zoomControl: false,
@@ -59,7 +63,6 @@ onMounted(() => {
         })
         layer.on('click', () => {
           mapStore.selectedFeature = feature
-          console.log('selected', feature)
         })
       },
       pointToLayer: (geoJsonPoint, latlng) => {
@@ -105,6 +108,15 @@ onMounted(() => {
     },
   }
 
+  // Create one single array with all Arten as strings
+  mapStore.artenschirmOptions = Data.Artenschirm.features
+    .map((f: any) =>
+      f.properties.Arten.map((art: Art) => {
+        const artEntries: Array<string> = art[Object.keys(art)[0]]
+        return artEntries
+      }).flat(),
+    )
+    .flat()
   const artenschirmGeojson = createGeojsonForLeaflet(Data.Artenschirm, artenschirmOptions)
   artenschirmGeojson.addTo(map)
   mapStore.artenschirm = artenschirmGeojson

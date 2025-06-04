@@ -51,7 +51,7 @@ const toggleLayer = (layer: Layer) => {
             "
           ></span>
         </label>
-        <input type="text" placeholder="Arten suchen..." />
+        <FilterSearch :options="mapStore.artenschirmOptions" />
         <label>
           <input type="checkbox" />
           <span>Filter 1</span>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, toRaw, watch } from 'vue'
 import { useMapStore } from '@/stores/map.ts'
 import type { LayerGroup as LayerGroupType } from 'leaflet'
 import Data from '../Geo-Daten/Engagement.json'
@@ -13,6 +13,14 @@ const mapStore = useMapStore()
 type Art = {
   [k: string]: Array<string>
 }
+
+watch(
+  mapStore.artenschirmFilters,
+  () => {
+    mapStore.applyFilters()
+  },
+  { deep: true },
+)
 
 onMounted(() => {
   const map = L.map('map', {
@@ -63,6 +71,9 @@ onMounted(() => {
           })
         })
         layer.on('click', () => {
+          map.flyToBounds(layer.getBounds(), {
+            duration: 2,
+          })
           mapStore.selectedFeature = feature
         })
       },

@@ -55,10 +55,10 @@ const toggleLayer = (layer: Layer) => {
         <FilterSearch
           @updatedFilters="
             (event) => {
-              mapStore.artenFilters = event
+              mapStore.setArtenFilter('arten', event)
             }
           "
-          :activeFilters="mapStore.artenFilters"
+          :activeFilters="mapStore.artenschirmFilters.arten"
           label="Nach Arten filtern:"
           :options="mapStore.artenschirmOptions"
           placeholder="Trivialer oder lateinischer Name"
@@ -75,19 +75,19 @@ const toggleLayer = (layer: Layer) => {
           placeholder="Bundesland"
         />
         <label>
-          <input checked type="checkbox" />
+          <input v-model="mapStore.artenschirmFilters.geplant" type="checkbox" />
           <span>Geplant</span>
         </label>
         <label>
-          <input checked type="checkbox" />
+          <input v-model="mapStore.artenschirmFilters.bestehend" type="checkbox" />
           <span>Bestehend</span>
         </label>
         <label>
-          <input checked type="checkbox" />
+          <input v-model="mapStore.artenschirmFilters.artenschirmArten" type="checkbox" />
           <span>Artenschirm-Arten</span>
         </label>
         <label>
-          <input checked type="checkbox" />
+          <input v-model="mapStore.artenschirmFilters.andereArten" type="checkbox" />
           <span>Andere Arten</span>
         </label>
       </div>

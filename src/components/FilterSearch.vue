@@ -2,9 +2,7 @@
 import { computed, ref } from 'vue'
 import type { Ref } from 'vue'
 import { X } from 'lucide-vue-next'
-import { useMapStore } from '@/stores/map.ts'
 
-const mapStore = useMapStore()
 const emit = defineEmits(['updatedFilters'])
 const props = defineProps<{
   activeFilters: Array<string>
@@ -49,9 +47,7 @@ const onKeyDown = (event: any) => {
       focusedSuggestionIndex.value = props.options.length - 1
     }
   } else if (event.key === 'Enter') {
-    if (focusedSuggestionIndex.value === -1) {
-      applyFilters()
-    } else {
+    if (focusedSuggestionIndex.value !== -1) {
       selectSuggestion(focusedSuggestionIndex.value)
     }
   }
@@ -71,15 +67,10 @@ const resetInput = () => {
   inputValue.value = ''
 }
 
-const applyFilters = () => {
-  mapStore.applyFilters()
-}
-
 const selectSuggestion = (index: number) => {
   emit('updatedFilters', [...props.activeFilters, suggestions.value[index]])
   resetInput()
   focusedSuggestionIndex.value = -1
-  applyFilters()
   showSuggestions.value = false
 }
 
@@ -87,7 +78,6 @@ const removeFilter = (index: number) => {
   const newFilters = [...props.activeFilters]
   newFilters.splice(index, 1)
   emit('updatedFilters', newFilters)
-  applyFilters()
 }
 </script>
 

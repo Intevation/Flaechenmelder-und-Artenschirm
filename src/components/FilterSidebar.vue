@@ -37,9 +37,10 @@ const toggleLayer = (layer: Layer) => {
   <div id="sidebar-container" :class="{ open: isSidebarOpen }">
     <aside id="sidebar">
       <div v-if="mapStore.artenschirm" class="sidebar-section">
+        <h2>Artenschirm</h2>
         <label>
           <input checked type="checkbox" :onchange="toggleArtenschirm" />
-          <span>Artenschirm aktiv</span>
+          <span>Auf der Karte anzeigen</span>
           <span
             style="
               display: inline-block;
@@ -62,23 +63,39 @@ const toggleLayer = (layer: Layer) => {
           :options="mapStore.artenschirmOptions"
           placeholder="Trivialer oder lateinischer Name"
         />
+        <FilterSearch
+          @updatedFilters="
+            (event) => {
+              mapStore.artenschirmBundeslandFilters = event
+            }
+          "
+          :activeFilters="mapStore.artenschirmBundeslandFilters"
+          label="Nach Bundesland filtern:"
+          :options="mapStore.bundeslaender"
+          placeholder="Bundesland"
+        />
         <label>
-          <input type="checkbox" />
-          <span>Filter 1</span>
+          <input checked type="checkbox" />
+          <span>Geplant</span>
         </label>
         <label>
-          <input type="checkbox" />
-          <span>Filter 2</span>
+          <input checked type="checkbox" />
+          <span>Bestehend</span>
         </label>
         <label>
-          <input type="checkbox" />
-          <span>Filter 3</span>
+          <input checked type="checkbox" />
+          <span>Artenschirm-Arten</span>
+        </label>
+        <label>
+          <input checked type="checkbox" />
+          <span>Andere Arten</span>
         </label>
       </div>
       <div v-if="mapStore.flaechenmelder" class="sidebar-section">
+        <h2>Flächenmelder</h2>
         <label>
           <input checked type="checkbox" :onchange="toggleFlaechenmelder" />
-          <span>Flächenmelder aktiv</span>
+          <span>Auf der Karte anzeigen</span>
           <span
             style="
               display: inline-block;

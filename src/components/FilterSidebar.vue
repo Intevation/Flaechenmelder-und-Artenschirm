@@ -13,14 +13,14 @@ const toggleSidebar = () => {
 }
 
 const toggleArtenschirm = () => {
-  if (mapStore.artenschirm) {
-    toggleLayer(mapStore.artenschirm)
+  if (mapStore.artenschirmCluster) {
+    toggleLayer(mapStore.artenschirmCluster)
   }
 }
 
 const toggleFlaechenmelder = () => {
-  if (mapStore.flaechenmelder) {
-    toggleLayer(mapStore.flaechenmelder)
+  if (mapStore.flaechenmelderCluster) {
+    toggleLayer(mapStore.flaechenmelderCluster)
   }
 }
 

@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { CircleMarker, Control, GeoJSON, Map, TileLayer } from 'leaflet'
 import { onMounted } from 'vue'
 import { useMapStore } from '@/stores/map.ts'
 import type { LayerGroup as LayerGroupType } from 'leaflet'
 import Data from '../Geo-Daten/Engagement.json'
+import L from 'leaflet'
+import 'leaflet.markercluster'
 
 import '@leaflet/dist/leaflet.css'
 
@@ -14,24 +15,24 @@ type Art = {
 }
 
 onMounted(() => {
-  const map = new Map('map', {
+  const map = L.map('map', {
     zoomControl: false,
   }).setView([51.505, 10.09], 6)
   mapStore.map = map
-  new TileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(map)
 
-  const zoomControl = new Control.Zoom({
+  const zoomControl = L.control.zoom({
     position: 'topright',
   })
   zoomControl.addTo(map)
 
   const createGeojsonForLeaflet = (data, options) => {
-    return new GeoJSON(data, {
+    return L.geoJSON(data, {
       onEachFeature: (feature, layer: LayerGroupType) => {
-        layer.on('pointerover', () => {
+        layer.on('mouseover', () => {
           layer.eachLayer((l: any) => {
             if (l._latlng) {
               // Point
@@ -46,7 +47,7 @@ onMounted(() => {
             }
           })
         })
-        layer.on('pointerout', () => {
+        layer.on('mouseout', () => {
           layer.eachLayer((l: any) => {
             if (l._latlng) {
               // Point
@@ -66,7 +67,7 @@ onMounted(() => {
         })
       },
       pointToLayer: (geoJsonPoint, latlng) => {
-        return new CircleMarker(latlng, options.markerOptions)
+        return new L.circleMarker(latlng, options.markerOptions)
       },
       fillColor: options.initialFillColor,
       color: '#991111',
@@ -91,7 +92,22 @@ onMounted(() => {
   }
 
   const flaechenmelderGeojson = createGeojsonForLeaflet(Data.Flaechenmelder, flaechenmelderOptions)
-  flaechenmelderGeojson.addTo(map)
+  const flaechenmelderClusterGroup = L.markerClusterGroup({
+    iconCreateFunction: function (cluster) {
+      const count = cluster.getChildCount()
+      const width = 14 + `${count}`.length * 3
+      return L.divIcon({
+        className: 'flaechenmelder cluster-div-icon',
+        html: '<b>' + count + '</b>',
+        iconSize: self.L.point(width, width),
+      })
+    },
+    maxClusterRadius: 20,
+    showCoverageOnHover: false,
+  })
+  flaechenmelderClusterGroup.addLayer(flaechenmelderGeojson)
+  map.addLayer(flaechenmelderClusterGroup)
+  mapStore.flaechenmelderCluster = flaechenmelderClusterGroup
   mapStore.flaechenmelder = flaechenmelderGeojson
 
   const artenschirmOptions = {
@@ -118,7 +134,22 @@ onMounted(() => {
     )
     .flat()
   const artenschirmGeojson = createGeojsonForLeaflet(Data.Artenschirm, artenschirmOptions)
-  artenschirmGeojson.addTo(map)
+  const artenschirmClusterGroup = L.markerClusterGroup({
+    iconCreateFunction: function (cluster) {
+      const count = cluster.getChildCount()
+      const width = 14 + `${count}`.length * 3
+      return L.divIcon({
+        className: 'artenschirm cluster-div-icon',
+        html: '<b>' + count + '</b>',
+        iconSize: self.L.point(width, width),
+      })
+    },
+    maxClusterRadius: 20,
+    showCoverageOnHover: false,
+  })
+  artenschirmClusterGroup.addLayer(artenschirmGeojson)
+  map.addLayer(artenschirmClusterGroup)
+  mapStore.artenschirmCluster = artenschirmClusterGroup
   mapStore.artenschirm = artenschirmGeojson
 })
 </script>
@@ -131,7 +162,7 @@ onMounted(() => {
   <FilterSidebar />
 </template>
 
-<style scoped>
+<style global>
 main {
   height: 100vh;
   width: 100%;
@@ -140,5 +171,22 @@ main {
 #map {
   height: 100%;
   width: 100%;
+}
+
+.cluster-div-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1pt white solid;
+  border-radius: 50%;
+  color: white;
+}
+
+.artenschirm.cluster-div-icon {
+  background-color: #051d2e;
+}
+
+.flaechenmelder.cluster-div-icon {
+  background-color: #e18432;
 }
 </style>

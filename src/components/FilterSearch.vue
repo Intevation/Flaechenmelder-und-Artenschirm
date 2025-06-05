@@ -19,7 +19,7 @@ const focusedSuggestionIndex = ref(-1)
 const inputValue = ref('')
 const suggestions = computed<Array<string>>(() => {
   if (showSuggestions.value === false) return []
-  if (inputValue.value === '') return []
+  if (!props.options) return []
   return props.options.filter((opt: string) => {
     return (
       opt.toLowerCase().includes(inputValue.value.toLowerCase()) &&
@@ -80,6 +80,7 @@ const selectSuggestion = (index: number) => {
   resetInput()
   focusedSuggestionIndex.value = -1
   applyFilters()
+  showSuggestions.value = false
 }
 
 const removeFilter = (index: number) => {

@@ -21,7 +21,7 @@ const properties = computed(() => {
     >
       <X />
     </button>
-    <div v-if="properties">
+    <template v-if="properties">
       <!-- Flächenmelder -->
       <div v-if="properties.Flaechenname">
         <h2>{{ properties.Flaechenname }}</h2>
@@ -29,10 +29,28 @@ const properties = computed(() => {
       </div>
 
       <!-- Artenschirm -->
-      <div v-else-if="properties.NameProjekt">
+      <template v-else-if="properties.NameProjekt">
         <h2>{{ properties.NameProjekt }}</h2>
         <div>Ziele: {{ properties.projektziele.join(', ') }}</div>
-        <div v-if="properties.Arten?.length > 0">Profitierende Arten: {{ properties.Arten }}</div>
+        <template v-if="properties.Arten?.length > 0">
+          <span>Profitierende Arten:</span>
+          <div
+            class="arten"
+            v-for="(category, artenIndex) in properties.Arten"
+            v-bind:key="`arten-${artenIndex}`"
+          >
+            <div class="category">
+              <div class="category-name">{{ Object.keys(category)[0] }}:</div>
+              <div
+                v-for="(art, categoryIndex) in category[Object.keys(category)[0]]"
+                v-bind:key="`${category}-${categoryIndex}`"
+                class="art"
+              >
+                {{ art }}
+              </div>
+            </div>
+          </div>
+        </template>
         <div v-if="properties.PlanStartjahr.trim()">
           Geplantes Startjahr: {{ properties.PlanStartjahr }}
         </div>
@@ -46,7 +64,7 @@ const properties = computed(() => {
         <a v-if="properties.linkProjekt" :href="properties.linkProjekt">{{
           properties.linkProjekt
         }}</a>
-      </div>
+      </template>
       <div v-if="properties.Fotos">
         <img v-for="(foto, index) in properties.Fotos" v-bind:key="index" :src="foto" />
       </div>
@@ -74,7 +92,7 @@ const properties = computed(() => {
       <div v-if="properties.email">
         {{ properties.email }}
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -97,9 +115,10 @@ const properties = computed(() => {
 #popup.open {
   width: fit-content;
   max-width: 400pt;
+  max-height: 98vh;
   right: 8pt;
   padding: 6pt;
-  overflow: reverse;
+  overflow: auto;
 }
 
 #popup:not(.open) * {
@@ -108,5 +127,26 @@ const properties = computed(() => {
 
 #close-popup {
   width: fit-content;
+}
+
+.arten {
+  display: flex;
+}
+
+.arten .category {
+  display: flex;
+  gap: 2pt;
+}
+
+.arten .category .category-name {
+  display: flex;
+  align-items: center;
+}
+
+.arten .category .art {
+  background-color: #ddd;
+  border-radius: 3pt;
+  padding: 2pt;
+  font-size: 10pt;
 }
 </style>

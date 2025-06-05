@@ -57,19 +57,10 @@ export const useMapStore = defineStore('geoData', () => {
   }
 
   const fitsToArtenschirmArtenFilter = (properties) => {
-    console.log(
-      'fitsToArtenschirmArtenFilter',
-      artenschirmFilters.value.artenschirmArten === true || properties.Arten?.length > 0,
-    )
     return artenschirmFilters.value.artenschirmArten === true || properties.Arten?.length > 0
   }
 
   const fitsToAndereArtenFilter = (properties) => {
-    console.log('properties.artensontiges', properties.artensontiges)
-    console.log(
-      'fitsToAndereArtenFilter',
-      artenschirmFilters.value.andereArten === true || properties.artensontiges?.length > 0,
-    )
     return artenschirmFilters.value.andereArten === true || properties.artensontiges?.length > 0
   }
 

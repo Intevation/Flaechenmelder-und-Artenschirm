@@ -37,8 +37,12 @@ onMounted(() => {
   })
   zoomControl.addTo(map)
 
-  const createGeojsonForLeaflet = (data, options) => {
-    return L.geoJSON(data, {
+  const createGeojsonForLeaflet = (allData, options) => {
+    // Ignore features without valid geometry data
+    const sanitizedData = structuredClone(allData)['features'].filter((f) => {
+      return f.geometries?.length && f.geometries.length > 0
+    })
+    return L.geoJSON(sanitizedData, {
       onEachFeature: (feature, layer: LayerGroupType) => {
         layer.on('mouseover', () => {
           layer.eachLayer((l: any) => {

@@ -2,9 +2,10 @@
 
 ## Project Setup
 
-```sh
-npm install
-```
+Install all dependencies via `npm install`
+
+Create a folder with name `Geo-Daten` in the root directory and put a file `Engagement.json`
+with the map data into it.
 
 ### Compile and Hot-Reload for Development
 

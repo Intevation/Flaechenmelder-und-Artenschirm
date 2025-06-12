@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, toRaw, watch } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useMapStore } from '@/stores/map.ts'
 import type { LayerGroup as LayerGroupType } from 'leaflet'
 import Data from '../Geo-Daten/Engagement.json'
 import L from 'leaflet'
 import 'leaflet.markercluster'
+import { area } from '@turf/area'
 
 import '@leaflet/dist/leaflet.css'
 
@@ -16,6 +17,14 @@ type Art = {
 
 watch(
   mapStore.artenschirmFilters,
+  () => {
+    mapStore.applyFilters()
+  },
+  { deep: true },
+)
+
+watch(
+  mapStore.flaechenmelderFilters,
   () => {
     mapStore.applyFilters()
   },
@@ -105,6 +114,23 @@ onMounted(() => {
       fillOpacity: 1,
     },
   }
+
+  const lebensraumTypen: string[] = []
+  Data.Flaechenmelder.features.forEach((f) => {
+    // Collect Lebensraumtypen to show them as options in dropdown
+    structuredClone(f).properties.Lebensraumtypen.forEach((t) => {
+      if (!lebensraumTypen.includes(t)) {
+        lebensraumTypen.push(t)
+      }
+    })
+
+    // Add size (in ha) to features
+    const polygon = f.geometries.find((g) => g.type === 'Polygon')
+    if (polygon) {
+      f.properties.areaSizeInHa = area(polygon) / 10000
+    }
+  })
+  mapStore.flaechenmelderLebensraumTypenOptions = lebensraumTypen
 
   const flaechenmelderGeojson = createGeojsonForLeaflet(Data.Flaechenmelder, flaechenmelderOptions)
   const flaechenmelderClusterGroup = L.markerClusterGroup({

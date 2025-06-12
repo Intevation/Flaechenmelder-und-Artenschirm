@@ -107,6 +107,29 @@ const toggleLayer = (layer: Layer) => {
             "
           ></span>
         </label>
+        <FilterSearch
+          @updatedFilters="
+            (event) => {
+              mapStore.flaechenmelderFilters.lebensraumtypen = event
+            }
+          "
+          :activeFilters="mapStore.flaechenmelderFilters.lebensraumtypen"
+          label="Nach Lebensraumtyp filtern:"
+          :options="mapStore.flaechenmelderLebensraumTypenOptions"
+          placeholder="Lebensraumtyp"
+        />
+        <label>
+          <input v-model="mapStore.flaechenmelderFilters.size.small" type="checkbox" />
+          <span>Kleiner als 10 ha</span>
+        </label>
+        <label>
+          <input v-model="mapStore.flaechenmelderFilters.size.medium" type="checkbox" />
+          <span>Zwischen 10 und 50 ha</span>
+        </label>
+        <label>
+          <input v-model="mapStore.flaechenmelderFilters.size.big" type="checkbox" />
+          <span>Größer als 50 ha</span>
+        </label>
       </div>
     </aside>
     <button id="toggle-sidebar" :onclick="toggleSidebar">

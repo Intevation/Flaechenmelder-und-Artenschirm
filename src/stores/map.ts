@@ -8,6 +8,15 @@ export const useMapStore = defineStore('geoData', () => {
   const artenschirm: Ref<GeoJSON | undefined> = ref(undefined)
   const flaechenmelder: Ref<GeoJSON | undefined> = ref(undefined)
   const flaechenmelderCluster = ref(undefined)
+  const flaechenmelderFilters = ref({
+    lebensraumtypen: [],
+    size: {
+      small: true,
+      medium: true,
+      big: true,
+    },
+  })
+  const flaechenmelderLebensraumTypenOptions: Ref<Array<string>> = ref([])
   const artenschirmOptions: Ref<Array<string>> = ref([])
   const artenschirmFilters = ref({
     arten: [],
@@ -64,6 +73,25 @@ export const useMapStore = defineStore('geoData', () => {
     return artenschirmFilters.value.andereArten === true || properties.artensontiges?.length > 0
   }
 
+  const fitsToLebensraumFilter = (properties) => {
+    const lebensraumtypen = flaechenmelderFilters.value.lebensraumtypen
+    return (
+      lebensraumtypen.length === 0 ||
+      (properties.Lebensraumtypen &&
+        lebensraumtypen.find((t) => JSON.stringify(properties.Lebensraumtypen).includes(t)))
+    )
+  }
+
+  const fitsToSizeFilter = (properties) => {
+    const size = properties.areaSizeInHa
+    const filterSize = flaechenmelderFilters.value.size
+    return (
+      (size < 10 && filterSize.small) ||
+      (size > 10 && size < 50 && filterSize.medium) ||
+      (size > 50 && filterSize.big)
+    )
+  }
+
   const applyFilters = () => {
     artenschirm.value?.eachLayer((layer) => {
       const properties = layer.feature.geometry.properties
@@ -81,10 +109,25 @@ export const useMapStore = defineStore('geoData', () => {
         layer.removeFrom(artenschirmCluster.value)
       }
     })
+
+    flaechenmelder.value?.eachLayer((layer) => {
+      const properties = layer.feature.geometry.properties
+      if (fitsToLebensraumFilter(properties) && fitsToSizeFilter(properties)) {
+        if (flaechenmelderCluster.value && !flaechenmelderCluster.value.hasLayer(layer)) {
+          layer.addTo(flaechenmelderCluster.value)
+        }
+      } else {
+        layer.removeFrom(flaechenmelderCluster.value)
+      }
+    })
   }
 
   const setArtenFilter = (key: string, value) => {
     artenschirmFilters.value[key] = value
+  }
+
+  const setFlaechenmelderFilter = (key: string, value) => {
+    flaechenmelderFilters.value[key] = value
   }
 
   return {
@@ -97,9 +140,12 @@ export const useMapStore = defineStore('geoData', () => {
     bundeslaender,
     flaechenmelder,
     flaechenmelderCluster,
+    flaechenmelderFilters,
+    flaechenmelderLebensraumTypenOptions,
     isPopupOpen,
     map,
     selectedFeature,
     setArtenFilter,
+    setFlaechenmelderFilter,
   }
 })

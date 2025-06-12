@@ -146,7 +146,7 @@ const toggleLayer = (layer: Layer) => {
   position: absolute;
   top: 8pt;
   left: 0pt;
-  height: calc(100% - 16pt);
+  max-height: calc(100% - 16pt);
   z-index: 1000;
 }
 #sidebar-container.open {
@@ -156,7 +156,7 @@ const toggleLayer = (layer: Layer) => {
 #sidebar {
   display: flex;
   flex-direction: column;
-  gap: 4pt;
+  gap: 10pt;
   padding: 0pt;
   width: 0pt;
   background-color: white;
@@ -169,7 +169,7 @@ const toggleLayer = (layer: Layer) => {
 }
 #sidebar-container.open #sidebar {
   width: 200pt;
-  padding: 6pt;
+  padding: 10pt;
   overflow: reverse;
 }
 

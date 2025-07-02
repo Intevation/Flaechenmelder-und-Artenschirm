@@ -127,6 +127,7 @@ onMounted(() => {
     // Add size (in ha) to features
     const polygon = f.geometries.find((g) => g.type === 'Polygon')
     if (polygon) {
+      if (!f.properties.Groesse)
       f.properties.areaSizeInHa = area(polygon) / 10000
     }
   })

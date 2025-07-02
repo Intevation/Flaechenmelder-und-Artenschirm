@@ -83,7 +83,7 @@ export const useMapStore = defineStore('geoData', () => {
   }
 
   const fitsToSizeFilter = (properties) => {
-    const size = properties.areaSizeInHa
+    const size = properties.Groesse ?? properties.areaSizeInHa
     const filterSize = flaechenmelderFilters.value.size
     return (
       (size < 10 && filterSize.small) ||

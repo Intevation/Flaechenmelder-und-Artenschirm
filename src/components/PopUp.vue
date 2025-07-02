@@ -25,7 +25,7 @@ const properties = computed(() => {
       <!-- Flächenmelder -->
       <div v-if="properties.Flaechenname">
         <h2>{{ properties.Flaechenname }}</h2>
-        <small>{{ properties.Flaechenname }}</small>
+        <div v-if="properties.Groesse">{{ `${properties.Groesse}`.replace('.', ',') }} Hektar</div>
       </div>
 
       <!-- Artenschirm -->
@@ -109,8 +109,8 @@ const properties = computed(() => {
         Was das Projekt voranbringen würde:
         <List :list="properties.voranbringen" />
       </div>
-      <div v-if="properties.Lebensraumtypen">
-        Lebensraumtyp:
+      <div v-if="properties.Lebensraumtypen?.length > 0">
+        Lebensraumtypen:
         <List :list="properties.Lebensraumtypen" />
       </div>
       Kontaktdaten der Ansprechperson für das Projekt:

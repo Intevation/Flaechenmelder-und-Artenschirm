@@ -66,10 +66,10 @@ const toggleLayer = (layer: Layer) => {
         <FilterSearch
           @updatedFilters="
             (event) => {
-              mapStore.artenschirmBundeslandFilters = event
+              mapStore.setArtenFilter('bundeslaender', event)
             }
           "
-          :activeFilters="mapStore.artenschirmBundeslandFilters"
+          :activeFilters="mapStore.artenschirmFilters.bundeslaender"
           label="Nach Bundesland filtern:"
           :options="mapStore.bundeslaender"
           placeholder="Bundesland"

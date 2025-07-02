@@ -32,22 +32,18 @@ export const useMapStore = defineStore('geoData', () => {
   const bundeslaender = ref([
     'Baden Würtemberg',
     'Bayern',
-    'Berlin',
-    'Brandenburg',
-    'Bremen',
-    'Hamburg',
+    'Brandenburg & Berlin',
     'Hessen',
-    'Niedersachsen',
+    'Niedersachsen & Bremen',
     'Mecklenburg-Vorpommern',
     'Nordrhein-Westfalen',
     'Rheinland-Pfalz',
     'Saarland',
     'Sachsen',
     'Sachsen-Anhalt',
-    'Schleswig-Holstein',
+    'Schleswig-Holstein & Hamburg',
     'Thüringen',
   ])
-  const artenschirmBundeslandFilters = ref([])
 
   const fitsToArtenFilter = (properties) => {
     const arten = artenschirmFilters.value.arten
@@ -71,6 +67,14 @@ export const useMapStore = defineStore('geoData', () => {
 
   const fitsToAndereArtenFilter = (properties) => {
     return artenschirmFilters.value.andereArten === true || properties.artensontiges?.length > 0
+  }
+
+  const fitsToBundeslandFilter = (properties) => {
+    return (
+      artenschirmFilters.value.bundeslaender.length === 0 ||
+      (properties.Bundesland &&
+        artenschirmFilters.value.bundeslaender.includes(properties.Bundesland))
+    )
   }
 
   const fitsToLebensraumFilter = (properties) => {
@@ -101,7 +105,8 @@ export const useMapStore = defineStore('geoData', () => {
         fitsToGeplantFilter(properties) &&
         fitsToBestehendFilter(properties) &&
         fitsToArtenschirmArtenFilter(properties) &&
-        fitsToAndereArtenFilter(properties)
+        fitsToAndereArtenFilter(properties) &&
+        fitsToBundeslandFilter(properties)
       ) {
         if (artenschirmCluster.value && !artenschirmCluster.value.hasLayer(layer)) {
           layer.addTo(artenschirmCluster.value)
@@ -134,7 +139,6 @@ export const useMapStore = defineStore('geoData', () => {
   return {
     applyFilters,
     artenschirm,
-    artenschirmBundeslandFilters,
     artenschirmCluster,
     artenschirmFilters,
     artenschirmOptions,

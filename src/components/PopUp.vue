@@ -153,10 +153,6 @@ const properties = computed(() => {
   display: none;
 }
 
-#close-popup {
-  width: fit-content;
-}
-
 .arten {
   display: flex;
   flex-direction: column;

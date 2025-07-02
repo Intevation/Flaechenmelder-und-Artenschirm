@@ -177,16 +177,10 @@ const toggleLayer = (layer: Layer) => {
   height: 26pt;
   width: 24pt;
   margin-top: 20pt;
-  border: 2px solid rgba(0, 0, 0, 0.2);
   border-left: none;
   background-clip: padding-box;
-  background-color: white;
   border-top-right-radius: 2pt;
   border-bottom-right-radius: 2pt;
-  cursor: pointer;
-}
-#toggle-sidebar:hover {
-  background-color: #f4f4f4;
 }
 #sidebar-container #toggle-sidebar div {
   display: flex;

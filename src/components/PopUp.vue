@@ -75,21 +75,21 @@ const properties = computed(() => {
         <a v-if="properties.linkProjekt" :href="properties.linkProjekt">{{
           properties.linkProjekt
         }}</a>
-        <div v-if="properties.Engagementtyp">
-          <span>Haupt- oder ehrenamtliche Leitung/Durchführung: </span>
-          <span v-if="['ehrenamtlich', 'hauptamtlich'].includes(properties.Engagementtyp)">
-            {{
-              properties.Engagementtyp.charAt(0).toUpperCase() +
-              properties.Engagementtyp.substring(1)
-            }}
-          </span>
-          <span v-else-if="properties.Engagementtyp === 'HauptundEhrenamtlich'">
-            Haupt- und ehrenamtlich
-          </span>
-        </div>
       </template>
       <div v-if="properties.Fotos?.length > 0">
         <ImageCarousel :imageLinks="properties.Fotos" />
+      </div>
+      <div v-if="properties.Engagementtyp">
+        <span>Haupt- oder ehrenamtliche Leitung/Durchführung: </span>
+        <span v-if="['ehrenamtlich', 'hauptamtlich'].includes(properties.Engagementtyp)">
+          {{
+            properties.Engagementtyp.charAt(0).toUpperCase() +
+            properties.Engagementtyp.substring(1)
+          }}
+        </span>
+        <span v-else-if="properties.Engagementtyp === 'HauptundEhrenamtlich'">
+          Haupt- und ehrenamtlich
+        </span>
       </div>
       <div v-if="properties.Kooperation">Kooperationspartner: {{ properties.Kooperation }}</div>
       <div v-if="properties.Erfolgsmessung">

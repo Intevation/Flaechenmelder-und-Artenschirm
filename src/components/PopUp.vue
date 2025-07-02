@@ -88,8 +88,8 @@ const properties = computed(() => {
           </span>
         </div>
       </template>
-      <div v-if="properties.Fotos">
-        <img v-for="(foto, index) in properties.Fotos" v-bind:key="index" :src="foto" />
+      <div v-if="properties.Fotos?.length > 0">
+        <ImageCarousel :imageLinks="properties.Fotos" />
       </div>
       <div v-if="properties.Kooperation">Kooperationspartner: {{ properties.Kooperation }}</div>
       <div v-if="properties.Erfolgsmessung">

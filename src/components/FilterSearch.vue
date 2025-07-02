@@ -83,25 +83,6 @@ const removeFilter = (index: number) => {
 
 <template>
   <div class="filter-search">
-    <div class="active-filters">
-      <div
-        v-for="(filter, index) in props.activeFilters"
-        v-bind:key="`filter-${filter}`"
-        class="filter"
-      >
-        <span>{{ filter }}</span>
-        <button
-          :title="`Filter entfernen: ${filter}`"
-          :onclick="
-            () => {
-              removeFilter(index)
-            }
-          "
-        >
-          <X aria-hidden="true" :size="16" />
-        </button>
-      </div>
-    </div>
     <div class="combobox-container">
       <label for="searchbar-input">{{ props.label }}</label>
       <div
@@ -177,6 +158,25 @@ const removeFilter = (index: number) => {
             </li>
           </template>
         </ul>
+      </div>
+    </div>
+    <div class="active-filters">
+      <div
+        v-for="(filter, index) in props.activeFilters"
+        v-bind:key="`filter-${filter}`"
+        class="filter"
+      >
+        <span>{{ filter }}</span>
+        <button
+          :title="`Filter entfernen: ${filter}`"
+          :onclick="
+            () => {
+              removeFilter(index)
+            }
+          "
+        >
+          <X aria-hidden="true" :size="16" />
+        </button>
       </div>
     </div>
   </div>

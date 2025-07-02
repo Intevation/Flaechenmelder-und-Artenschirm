@@ -49,8 +49,8 @@ const properties = computed(() => {
             v-bind:key="`arten-${artenIndex}`"
           >
             <template v-if="properties.Arten?.length > 0">
+            <div class="category-name">{{ Object.keys(category)[0] }}:</div>
               <div class="category">
-                <div class="category-name">{{ Object.keys(category)[0] }}:</div>
                 <div
                   v-for="(art, categoryIndex) in category[Object.keys(category)[0]]"
                   v-bind:key="`${category}-${categoryIndex}`"
@@ -63,7 +63,7 @@ const properties = computed(() => {
           </div>
           <div v-if="properties.artensontiges.trim()">
             <h4>Sonstige Arten</h4>
-            <div>
+            <div class="art">
               {{ properties.artensontiges }}
             </div>
           </div>
@@ -159,6 +159,7 @@ const properties = computed(() => {
 
 .arten {
   display: flex;
+  flex-direction: column;
 }
 
 .arten .category {
@@ -171,10 +172,11 @@ const properties = computed(() => {
   align-items: center;
 }
 
-.arten .category .art {
+.art {
+  width: fit-content;
   background-color: #ddd;
   border-radius: 3pt;
-  padding: 2pt;
+  padding: 3pt 4pt;
   font-size: 10pt;
 }
 </style>

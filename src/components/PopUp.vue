@@ -37,7 +37,7 @@ const properties = computed(() => {
         <div v-if="properties.Startjahr && properties.Endjahr">
           {{ properties.Startjahr }} - {{ properties.Endjahr }}
         </div>
-        <div v-if="properties.Startjahr2">Seit dem {{ properties.Startjahr2 }}</div>
+        <div v-if="properties.Startjahr2">Seit {{ properties.Startjahr2 }}</div>
         <h3>Ziele</h3>
         <List :list="properties.projektziele" />
         <template v-if="properties.Arten?.length > 0">

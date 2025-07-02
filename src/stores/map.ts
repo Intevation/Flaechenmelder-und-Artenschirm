@@ -83,7 +83,8 @@ export const useMapStore = defineStore('geoData', () => {
   }
 
   const fitsToSizeFilter = (properties) => {
-    const size = properties.Groesse ?? properties.areaSizeInHa
+    const size =
+      properties.Groesse && properties.Groesse !== '' ? properties.Groesse : properties.areaSizeInHa
     const filterSize = flaechenmelderFilters.value.size
     return (
       (size < 10 && filterSize.small) ||
@@ -94,7 +95,7 @@ export const useMapStore = defineStore('geoData', () => {
 
   const applyFilters = () => {
     artenschirm.value?.eachLayer((layer) => {
-      const properties = layer.feature.properties
+      const properties = layer.feature.geometry.properties
       if (
         fitsToArtenFilter(properties) &&
         fitsToGeplantFilter(properties) &&
@@ -111,7 +112,7 @@ export const useMapStore = defineStore('geoData', () => {
     })
 
     flaechenmelder.value?.eachLayer((layer) => {
-      const properties = layer.feature.properties
+      const properties = layer.feature.geometry.properties
       if (fitsToLebensraumFilter(properties) && fitsToSizeFilter(properties)) {
         if (flaechenmelderCluster.value && !flaechenmelderCluster.value.hasLayer(layer)) {
           layer.addTo(flaechenmelderCluster.value)

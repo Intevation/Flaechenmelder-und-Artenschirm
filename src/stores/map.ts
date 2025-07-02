@@ -94,7 +94,7 @@ export const useMapStore = defineStore('geoData', () => {
 
   const applyFilters = () => {
     artenschirm.value?.eachLayer((layer) => {
-      const properties = layer.feature.geometry.properties
+      const properties = layer.feature.properties
       if (
         fitsToArtenFilter(properties) &&
         fitsToGeplantFilter(properties) &&
@@ -111,7 +111,7 @@ export const useMapStore = defineStore('geoData', () => {
     })
 
     flaechenmelder.value?.eachLayer((layer) => {
-      const properties = layer.feature.geometry.properties
+      const properties = layer.feature.properties
       if (fitsToLebensraumFilter(properties) && fitsToSizeFilter(properties)) {
         if (flaechenmelderCluster.value && !flaechenmelderCluster.value.hasLayer(layer)) {
           layer.addTo(flaechenmelderCluster.value)

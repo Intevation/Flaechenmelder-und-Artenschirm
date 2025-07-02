@@ -49,7 +49,7 @@ onMounted(() => {
   const createGeojsonForLeaflet = (allData, options) => {
     // Ignore features without valid geometry data
     const sanitizedData = structuredClone(allData)['features'].filter((f) => {
-      return f.geometries?.length && f.geometries.length > 0
+      return (f.geometries?.length && f.geometries.length > 0) || f.geometry
     })
     return L.geoJSON(sanitizedData, {
       onEachFeature: (feature, layer: LayerGroupType) => {
@@ -125,7 +125,7 @@ onMounted(() => {
     })
 
     // Add size (in ha) to features
-    const polygon = f.geometries.find((g) => g.type === 'Polygon')
+    const polygon = f.geometries?.find((g) => g.type === 'Polygon')
     if (polygon) {
       if (!f.properties.Groesse)
       f.properties.areaSizeInHa = area(polygon) / 10000

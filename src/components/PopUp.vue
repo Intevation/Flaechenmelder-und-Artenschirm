@@ -130,7 +130,7 @@ const properties = computed(() => {
   position: absolute;
   bottom: 8pt;
   right: 0pt;
-  z-index: 1000;
+  z-index: 1001;
   flex-direction: column;
   gap: 4pt;
   padding: 0pt;

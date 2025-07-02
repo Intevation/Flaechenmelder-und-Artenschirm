@@ -179,4 +179,15 @@ const properties = computed(() => {
   padding: 3pt 4pt;
   font-size: 10pt;
 }
+
+@media (max-width: 800px) {
+  #popup.open {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    right: 0;
+    bottom: 0;
+  }
+}
 </style>

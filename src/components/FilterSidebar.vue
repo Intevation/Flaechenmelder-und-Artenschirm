@@ -88,7 +88,7 @@ const toggleLayer = (layer: Layer) => {
         </label>
         <label>
           <input v-model="mapStore.artenschirmFilters.andereArten" type="checkbox" />
-          <span>Andere Arten</span>
+          <span>Sonstige Arten</span>
         </label>
       </div>
       <div v-if="mapStore.flaechenmelder" class="sidebar-section">

@@ -49,7 +49,7 @@ const properties = computed(() => {
             v-bind:key="`arten-${artenIndex}`"
           >
             <template v-if="properties.Arten?.length > 0">
-            <div class="category-name">{{ Object.keys(category)[0] }}:</div>
+              <div class="category-name">{{ Object.keys(category)[0] }}:</div>
               <div class="category">
                 <div
                   v-for="(art, categoryIndex) in category[Object.keys(category)[0]]"
@@ -83,8 +83,7 @@ const properties = computed(() => {
         <span>Haupt- oder ehrenamtliche Leitung/Durchführung: </span>
         <span v-if="['ehrenamtlich', 'hauptamtlich'].includes(properties.Engagementtyp)">
           {{
-            properties.Engagementtyp.charAt(0).toUpperCase() +
-            properties.Engagementtyp.substring(1)
+            properties.Engagementtyp.charAt(0).toUpperCase() + properties.Engagementtyp.substring(1)
           }}
         </span>
         <span v-else-if="properties.Engagementtyp === 'HauptundEhrenamtlich'">

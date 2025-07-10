@@ -128,7 +128,7 @@ onMounted(() => {
     const polygon = f.geometries?.find((g) => g.type === 'Polygon')
     if (polygon) {
       if (f.properties.Groesse) {
-        f.properties.Groesse = Number(f.properties.Groesse.replace(",", "."))
+        f.properties.Groesse = Number(f.properties.Groesse.replace(',', '.'))
       } else {
         f.properties.areaSizeInHa = area(polygon) / 10000
       }

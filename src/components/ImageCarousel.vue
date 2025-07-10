@@ -13,15 +13,20 @@ const carouselConfig = {
   enabled: props.imageLinks.length > Math.floor(maxNumberOfVisibleImages),
   height: 200,
   itemsToShow: itemsToShow,
-  wrapAround: props.imageLinks.length > Math.floor(maxNumberOfVisibleImages)
+  wrapAround: props.imageLinks.length > Math.floor(maxNumberOfVisibleImages),
 }
 </script>
 
 <template>
-<Carousel v-bind="carouselConfig" :gap="20" :height="200" :i18n="{
-    ariaNextSlide: 'Vorheriges Foto',
-    ariaPreviousSlide: 'Nächstes Foto'
-  }">
+  <Carousel
+    v-bind="carouselConfig"
+    :gap="20"
+    :height="200"
+    :i18n="{
+      ariaNextSlide: 'Vorheriges Foto',
+      ariaPreviousSlide: 'Nächstes Foto',
+    }"
+  >
     <Slide v-for="link in props.imageLinks" :key="link">
       <img :src="link" />
     </Slide>
@@ -40,4 +45,3 @@ img {
   max-width: 100%;
 }
 </style>
-

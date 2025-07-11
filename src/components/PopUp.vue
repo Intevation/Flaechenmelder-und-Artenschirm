@@ -7,6 +7,15 @@ const mapStore = useMapStore()
 const properties = computed(() => {
   return mapStore.selectedFeature?.properties
 })
+
+const displayArea = () => {
+  if (properties.value.Groesse) {
+    return `${properties.value.Groesse}`.replace('.', ',') + ' Hektar'
+  } else if (properties.value.areaSizeInHa) {
+    return `${properties.value.areaSizeInHa.toFixed(2)}`.replace('.', ',') + ' Hektar'
+  }
+  return ''
+}
 </script>
 
 <template>
@@ -35,7 +44,9 @@ const properties = computed(() => {
     <div v-if="properties" id="popup-content">
       <!-- Flächenmelder -->
       <div v-if="properties.Flaechenname">
-        <div v-if="properties.Groesse">{{ `${properties.Groesse}`.replace('.', ',') }} Hektar</div>
+        <div v-if="properties.Groesse || properties.areaSizeInHa">
+          {{ displayArea() }}
+        </div>
       </div>
 
       <!-- Artenschirm -->

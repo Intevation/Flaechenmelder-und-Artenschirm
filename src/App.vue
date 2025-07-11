@@ -15,6 +15,34 @@ type Art = {
   [k: string]: Array<string>
 }
 
+const flaechenmelderOptions = {
+  initialFillColor: '#99441520',
+  hoverFillColor: '#99441560',
+  hoverMarkerRadius: 10,
+  markerOptions: {
+    radius: 6,
+    fillColor: '#e18432',
+    color: '#fff',
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 1,
+  },
+}
+
+const artenschirmOptions = {
+  initialFillColor: '#99441520',
+  hoverFillColor: '#99441560',
+  hoverMarkerRadius: 10,
+  markerOptions: {
+    radius: 6,
+    fillColor: '#051d2e',
+    color: '#fff',
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 1,
+  },
+}
+
 watch(
   mapStore.artenschirmFilters,
   () => {
@@ -31,107 +59,80 @@ watch(
   { deep: true },
 )
 
-onMounted(() => {
-  const map = L.map('map', {
-    zoomControl: false,
-  }).setView([51.505, 10.09], 6)
-  mapStore.map = map
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  }).addTo(map)
-
-  const zoomControl = L.control.zoom({
-    position: 'topright',
+// Create Geojson object from the exported data
+const createGeojsonForLeaflet = (allData, options) => {
+  // Ignore features without valid geometry data
+  const sanitizedData = structuredClone(allData)['features'].filter((f) => {
+    return (f.geometries?.length && f.geometries.length > 0) || f.geometry
   })
-  zoomControl.addTo(map)
-
-  const createGeojsonForLeaflet = (allData, options) => {
-    // Ignore features without valid geometry data
-    const sanitizedData = structuredClone(allData)['features'].filter((f) => {
-      return (f.geometries?.length && f.geometries.length > 0) || f.geometry
-    })
-    return L.geoJSON(sanitizedData, {
-      onEachFeature: (feature, layer: LayerGroupType) => {
-        const isSinglePoint = feature.geometries == undefined
-        layer.on('mouseover', () => {
-          if (isSinglePoint) {
-            layer.setStyle({
-              radius: options.hoverMarkerRadius,
-            })
-          } else {
-            layer.eachLayer((l: any) => {
-              if (l._latlng) {
-                // Point
-                l.setStyle({
-                  radius: options.hoverMarkerRadius,
-                })
-              } else if (l._latlngs) {
-                // Polygon
-                l.setStyle({
-                  fillColor: options.hoverFillColor,
-                })
-              }
-            })
-          }
-        })
-        layer.on('mouseout', () => {
-          if (isSinglePoint) {
-            layer.setStyle({
-              radius: options.markerOptions.radius,
-            })
-          } else {
-            layer.eachLayer((l: any) => {
-              if (l._latlng) {
-                // Point
-                l.setStyle({
-                  radius: options.markerOptions.radius,
-                })
-              } else if (l._latlngs) {
-                // Polygon
-                l.setStyle({
-                  fillColor: options.initialFillColor,
-                })
-              }
-            })
-          }
-        })
-        layer.on('click', () => {
-          if (isSinglePoint) {
-            map.flyTo(layer._latlng, 10)
-          } else {
-            map.flyToBounds(layer.getBounds(), {
-              duration: 2,
-            })
-          }
-          mapStore.selectedFeature = feature
-        })
-      },
-      pointToLayer: (geoJsonPoint, latlng) => {
-        return new L.circleMarker(latlng, options.markerOptions)
-      },
-      fillColor: options.initialFillColor,
-      color: '#991111',
-      weight: 1,
-      opacity: 1,
-      fillOpacity: 1,
-    })
-  }
-
-  const flaechenmelderOptions = {
-    initialFillColor: '#99441520',
-    hoverFillColor: '#99441560',
-    hoverMarkerRadius: 10,
-    markerOptions: {
-      radius: 6,
-      fillColor: '#e18432',
-      color: '#fff',
-      weight: 1,
-      opacity: 1,
-      fillOpacity: 1,
+  return L.geoJSON(sanitizedData, {
+    onEachFeature: (feature, layer: LayerGroupType) => {
+      const isSinglePoint = feature.geometries == undefined
+      layer.on('mouseover', () => {
+        if (isSinglePoint) {
+          layer.setStyle({
+            radius: options.hoverMarkerRadius,
+          })
+        } else {
+          layer.eachLayer((l: any) => {
+            if (l._latlng) {
+              // Point
+              l.setStyle({
+                radius: options.hoverMarkerRadius,
+              })
+            } else if (l._latlngs) {
+              // Polygon
+              l.setStyle({
+                fillColor: options.hoverFillColor,
+              })
+            }
+          })
+        }
+      })
+      layer.on('mouseout', () => {
+        if (isSinglePoint) {
+          layer.setStyle({
+            radius: options.markerOptions.radius,
+          })
+        } else {
+          layer.eachLayer((l: any) => {
+            if (l._latlng) {
+              // Point
+              l.setStyle({
+                radius: options.markerOptions.radius,
+              })
+            } else if (l._latlngs) {
+              // Polygon
+              l.setStyle({
+                fillColor: options.initialFillColor,
+              })
+            }
+          })
+        }
+      })
+      layer.on('click', () => {
+        if (isSinglePoint) {
+          mapStore.map.flyTo(layer._latlng, 10)
+        } else {
+          mapStore.map.flyToBounds(layer.getBounds(), {
+            duration: 2,
+          })
+        }
+        mapStore.selectedFeature = feature
+      })
     },
-  }
+    pointToLayer: (geoJsonPoint, latlng) => {
+      return new L.circleMarker(latlng, options.markerOptions)
+    },
+    fillColor: options.initialFillColor,
+    color: '#991111',
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 1,
+  })
+}
 
+const addFlaechenmelderData = (map) => {
   const lebensraumTypen: string[] = []
   Data.Flaechenmelder.features.forEach((f) => {
     // Collect Lebensraumtypen to show them as options in dropdown
@@ -168,22 +169,28 @@ onMounted(() => {
     showCoverageOnHover: false,
   })
   flaechenmelderClusterGroup.addLayer(flaechenmelderGeojson)
-  map.addLayer(flaechenmelderClusterGroup)
+  mapStore.map.addLayer(flaechenmelderClusterGroup)
   mapStore.flaechenmelderCluster = flaechenmelderClusterGroup
   mapStore.flaechenmelder = flaechenmelderGeojson
+}
 
-  const artenschirmOptions = {
-    initialFillColor: '#99441520',
-    hoverFillColor: '#99441560',
-    hoverMarkerRadius: 10,
-    markerOptions: {
-      radius: 6,
-      fillColor: '#051d2e',
-      color: '#fff',
-      weight: 1,
-      opacity: 1,
-      fillOpacity: 1,
-    },
+onMounted(() => {
+  const map = L.map('map', {
+    zoomControl: false,
+  }).setView([51.505, 10.09], 6)
+  mapStore.map = map
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  }).addTo(map)
+
+  const zoomControl = L.control.zoom({
+    position: 'topright',
+  })
+  zoomControl.addTo(map)
+
+  if (Data.Flaechenmelder) {
+    addFlaechenmelderData()
   }
 
   // Create one single array with all Arten as strings

@@ -11,26 +11,35 @@ const properties = computed(() => {
 
 <template>
   <div id="popup" :class="{ open: mapStore.selectedFeature }">
-    <button
-      id="close-popup"
-      :onclick="
-        () => {
-          mapStore.selectedFeature = undefined
-        }
-      "
-    >
-      <X />
-    </button>
-    <template v-if="properties">
+    <div v-if="properties" id="popup-header">
+      <h2>
+        {{
+          properties.Flaechenname
+            ? properties.Flaechenname
+            : properties.NameProjekt
+              ? properties.NameProjekt
+              : ''
+        }}
+      </h2>
+      <button
+        id="close-popup"
+        :onclick="
+          () => {
+            mapStore.selectedFeature = undefined
+          }
+        "
+      >
+        <X />
+      </button>
+    </div>
+    <div v-if="properties" id="popup-content">
       <!-- Flächenmelder -->
       <div v-if="properties.Flaechenname">
-        <h2>{{ properties.Flaechenname }}</h2>
         <div v-if="properties.Groesse">{{ `${properties.Groesse}`.replace('.', ',') }} Hektar</div>
       </div>
 
       <!-- Artenschirm -->
       <template v-else-if="properties.NameProjekt">
-        <h2>{{ properties.NameProjekt }}</h2>
         <div v-if="properties.PlanStartjahr.trim()">
           Geplantes Startjahr: {{ properties.PlanStartjahr }}
         </div>
@@ -119,7 +128,7 @@ const properties = computed(() => {
       <div v-if="properties.email">
         {{ properties.email }}
       </div>
-    </template>
+    </div>
   </div>
 </template>
 
@@ -145,11 +154,19 @@ const properties = computed(() => {
   max-height: 98vh;
   right: 8pt;
   padding: 6pt;
-  overflow: auto;
 }
 
 #popup:not(.open) * {
   display: none;
+}
+
+#popup-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+#popup-content {
+  overflow: auto;
 }
 
 .arten {

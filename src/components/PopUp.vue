@@ -47,6 +47,9 @@ const displayArea = () => {
         <div v-if="properties.Groesse || properties.areaSizeInHa">
           {{ displayArea() }}
         </div>
+        <a v-if="properties.Website" :href="properties.Website">
+          {{ properties.Website }}
+        </a>
       </div>
 
       <!-- Artenschirm -->

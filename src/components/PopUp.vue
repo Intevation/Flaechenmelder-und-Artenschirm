@@ -68,29 +68,30 @@ const displayArea = () => {
         <List :list="properties.projektziele" />
         <template v-if="properties.Arten?.length > 0">
           <h3>Profitierende Arten</h3>
-          <h4>Artenschirm-Arten</h4>
-          <div
-            class="arten"
-            v-for="(category, artenIndex) in properties.Arten"
-            v-bind:key="`arten-${artenIndex}`"
-          >
-            <template v-if="properties.Arten?.length > 0">
-              <div class="category-name">{{ Object.keys(category)[0] }}:</div>
-              <div class="category">
-                <div
-                  v-for="(art, categoryIndex) in category[Object.keys(category)[0]]"
-                  v-bind:key="`${category}-${categoryIndex}`"
-                  class="art"
-                >
-                  {{ art }}
+          <div class="arten-container">
+            <div
+              class="arten"
+              v-for="(category, artenIndex) in properties.Arten"
+              v-bind:key="`arten-${artenIndex}`"
+            >
+              <template v-if="properties.Arten?.length > 0">
+                <div class="category-name">{{ Object.keys(category)[0] }}</div>
+                <div class="category">
+                  <div
+                    v-for="(art, categoryIndex) in category[Object.keys(category)[0]]"
+                    v-bind:key="`${category}-${categoryIndex}`"
+                    class="art"
+                  >
+                    {{ art }}
+                  </div>
                 </div>
+              </template>
+            </div>
+            <div v-if="properties.artensontiges.trim()" class="arten">
+              <div class="category-name">Sonstige Arten</div>
+              <div class="art">
+                {{ properties.artensontiges }}
               </div>
-            </template>
-          </div>
-          <div v-if="properties.artensontiges.trim()">
-            <h4>Sonstige Arten</h4>
-            <div class="art">
-              {{ properties.artensontiges }}
             </div>
           </div>
         </template>
@@ -179,30 +180,53 @@ const displayArea = () => {
 #popup-header {
   display: flex;
   justify-content: space-between;
+  gap: 6pt;
 }
 
 #popup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2pt;
   overflow: auto;
+}
+
+h2 {
+  font-size: 14pt;
+}
+
+h3 {
+  font-size: 13pt;
+}
+
+h4 {
+  font-weight: bold;
+}
+
+.arten-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6pt;
 }
 
 .arten {
   display: flex;
   flex-direction: column;
+  border-radius: 2pt;
 }
 
 .arten .category {
   display: flex;
-  gap: 2pt;
+  gap: 3pt;
 }
 
-.arten .category .category-name {
-  display: flex;
-  align-items: center;
+.arten .category-name {
+  font-size: 10pt;
+  color: #222;
 }
 
 .art {
   width: fit-content;
-  background-color: #ddd;
+  background-color: #eee;
   border-radius: 3pt;
   padding: 3pt 4pt;
   font-size: 10pt;

@@ -132,12 +132,14 @@ const displayArea = () => {
         Lebensraumtypen:
         <List :list="properties.Lebensraumtypen" />
       </div>
-      Kontaktdaten der Ansprechperson für das Projekt:
-      <div v-if="properties.VornameName">
-        {{ properties.VornameName }}
-      </div>
-      <div v-if="properties.email">
-        {{ properties.email }}
+      <div v-if="properties.VornameName || properties.email">
+        Kontaktdaten der Ansprechperson für das Projekt:
+        <div v-if="properties.VornameName">
+          {{ properties.VornameName }}
+        </div>
+        <div v-if="properties.email">
+          {{ properties.email }}
+        </div>
       </div>
     </div>
   </div>

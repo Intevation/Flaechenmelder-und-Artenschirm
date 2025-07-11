@@ -53,40 +53,57 @@ onMounted(() => {
     })
     return L.geoJSON(sanitizedData, {
       onEachFeature: (feature, layer: LayerGroupType) => {
+        const isSinglePoint = feature.geometries == undefined
         layer.on('mouseover', () => {
-          layer.eachLayer((l: any) => {
-            if (l._latlng) {
-              // Point
-              l.setStyle({
-                radius: options.hoverMarkerRadius,
-              })
-            } else if (l._latlngs) {
-              // Polygon
-              l.setStyle({
-                fillColor: options.hoverFillColor,
-              })
-            }
-          })
+          if (isSinglePoint) {
+            layer.setStyle({
+              radius: options.hoverMarkerRadius,
+            })
+          } else {
+            layer.eachLayer((l: any) => {
+              if (l._latlng) {
+                // Point
+                l.setStyle({
+                  radius: options.hoverMarkerRadius,
+                })
+              } else if (l._latlngs) {
+                // Polygon
+                l.setStyle({
+                  fillColor: options.hoverFillColor,
+                })
+              }
+            })
+          }
         })
         layer.on('mouseout', () => {
-          layer.eachLayer((l: any) => {
-            if (l._latlng) {
-              // Point
-              l.setStyle({
-                radius: options.markerOptions.radius,
-              })
-            } else if (l._latlngs) {
-              // Polygon
-              l.setStyle({
-                fillColor: options.initialFillColor,
-              })
-            }
-          })
+          if (isSinglePoint) {
+            layer.setStyle({
+              radius: options.markerOptions.radius,
+            })
+          } else {
+            layer.eachLayer((l: any) => {
+              if (l._latlng) {
+                // Point
+                l.setStyle({
+                  radius: options.markerOptions.radius,
+                })
+              } else if (l._latlngs) {
+                // Polygon
+                l.setStyle({
+                  fillColor: options.initialFillColor,
+                })
+              }
+            })
+          }
         })
         layer.on('click', () => {
-          map.flyToBounds(layer.getBounds(), {
-            duration: 2,
-          })
+          if (isSinglePoint) {
+            map.flyTo(layer._latlng, 10)
+          } else {
+            map.flyToBounds(layer.getBounds(), {
+              duration: 2,
+            })
+          }
           mapStore.selectedFeature = feature
         })
       },

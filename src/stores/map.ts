@@ -99,7 +99,7 @@ export const useMapStore = defineStore('geoData', () => {
 
   const applyFilters = () => {
     artenschirm.value?.eachLayer((layer) => {
-      const properties = layer.feature.geometry.properties
+      const properties = layer.feature.properties
       if (
         fitsToArtenFilter(properties) &&
         fitsToGeplantFilter(properties) &&

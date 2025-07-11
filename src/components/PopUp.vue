@@ -61,6 +61,9 @@ const displayArea = () => {
           {{ properties.Startjahr }} - {{ properties.Endjahr }}
         </div>
         <div v-if="properties.Startjahr2">Seit {{ properties.Startjahr2 }}</div>
+        <a v-if="properties.linkProjekt" :href="properties.linkProjekt">
+          {{ properties.linkProjekt }}
+        </a>
         <h3>Ziele</h3>
         <List :list="properties.projektziele" />
         <template v-if="properties.Arten?.length > 0">
@@ -95,9 +98,6 @@ const displayArea = () => {
           {{ properties.bestehendesProjekt === true ? 'Durchgeführte' : 'Geplante' }} Maßnahmen:
           {{ properties.Massnahmen }}
         </div>
-        <a v-if="properties.linkProjekt" :href="properties.linkProjekt">{{
-          properties.linkProjekt
-        }}</a>
       </template>
       <div v-if="properties.Fotos?.length > 0">
         <ImageCarousel :imageLinks="properties.Fotos" />

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
+import { onMounted, toRaw, watch } from 'vue'
 import { useMapStore } from '@/stores/map.ts'
 import type { LayerGroup as LayerGroupType } from 'leaflet'
 import Data from '../Geo-Daten/Engagement.json'
@@ -112,9 +112,9 @@ const createGeojsonForLeaflet = (allData, options) => {
       })
       layer.on('click', () => {
         if (isSinglePoint) {
-          mapStore.map.flyTo(layer._latlng, 10)
+          toRaw(mapStore.map).flyTo(layer._latlng, 10)
         } else {
-          mapStore.map.flyToBounds(layer.getBounds(), {
+          toRaw(mapStore.map).flyToBounds(layer.getBounds(), {
             duration: 2,
           })
         }
@@ -132,7 +132,7 @@ const createGeojsonForLeaflet = (allData, options) => {
   })
 }
 
-const addFlaechenmelderData = (map) => {
+const addFlaechenmelderData = () => {
   const lebensraumTypen: string[] = []
   Data.Flaechenmelder.features.forEach((f) => {
     // Collect Lebensraumtypen to show them as options in dropdown
@@ -169,7 +169,7 @@ const addFlaechenmelderData = (map) => {
     showCoverageOnHover: false,
   })
   flaechenmelderClusterGroup.addLayer(flaechenmelderGeojson)
-  mapStore.map.addLayer(flaechenmelderClusterGroup)
+  toRaw(mapStore.map).addLayer(flaechenmelderClusterGroup)
   mapStore.flaechenmelderCluster = flaechenmelderClusterGroup
   mapStore.flaechenmelder = flaechenmelderGeojson
 }

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, toRaw } from 'vue'
 import type { Ref } from 'vue'
 import type { GeoJSON, Map } from 'leaflet'
 
@@ -98,7 +98,8 @@ export const useMapStore = defineStore('geoData', () => {
   }
 
   const applyFilters = () => {
-    artenschirm.value?.eachLayer((layer) => {
+    artenschirm.value?.eachLayer((l) => {
+      const layer = toRaw(l)
       const properties = layer.feature.properties
       if (
         fitsToArtenFilter(properties) &&
@@ -109,21 +110,23 @@ export const useMapStore = defineStore('geoData', () => {
         fitsToBundeslandFilter(properties)
       ) {
         if (artenschirmCluster.value && !artenschirmCluster.value.hasLayer(layer)) {
-          layer.addTo(artenschirmCluster.value)
+          console.log(artenschirmCluster.value)
+          layer.addTo(toRaw(artenschirmCluster.value))
         }
       } else {
-        layer.removeFrom(artenschirmCluster.value)
+        layer.removeFrom(toRaw(artenschirmCluster.value))
       }
     })
 
-    flaechenmelder.value?.eachLayer((layer) => {
+    flaechenmelder.value?.eachLayer((l) => {
+      const layer = toRaw(l)
       const properties = layer.feature.geometry.properties
       if (fitsToLebensraumFilter(properties) && fitsToSizeFilter(properties)) {
         if (flaechenmelderCluster.value && !flaechenmelderCluster.value.hasLayer(layer)) {
-          layer.addTo(flaechenmelderCluster.value)
+          layer.addTo(toRaw(flaechenmelderCluster.value))
         }
       } else {
-        layer.removeFrom(flaechenmelderCluster.value)
+        layer.removeFrom(toRaw(flaechenmelderCluster.value))
       }
     })
   }

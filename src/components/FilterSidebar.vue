@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, toRaw } from 'vue'
 import type { Ref } from 'vue'
 import type { Layer } from 'leaflet'
 import { ChevronLeft } from 'lucide-vue-next'
@@ -14,21 +14,23 @@ const toggleSidebar = () => {
 
 const toggleArtenschirm = () => {
   if (mapStore.artenschirmCluster) {
-    toggleLayer(mapStore.artenschirmCluster)
+    toggleLayer(toRaw(mapStore.artenschirmCluster))
   }
 }
 
 const toggleFlaechenmelder = () => {
   if (mapStore.flaechenmelderCluster) {
-    toggleLayer(mapStore.flaechenmelderCluster)
+    toggleLayer(toRaw(mapStore.flaechenmelderCluster))
   }
 }
 
 const toggleLayer = (layer: Layer) => {
-  if (mapStore.map?.hasLayer(layer)) {
-    mapStore.map.removeLayer(layer)
+  const map = mapStore.map ? toRaw(mapStore.map) : undefined
+  console.log('map', map)
+  if (map?.hasLayer(layer)) {
+    map.removeLayer(layer)
   } else {
-    mapStore.map?.addLayer(layer)
+    map?.addLayer(layer)
   }
 }
 </script>

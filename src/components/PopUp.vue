@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, toRaw } from 'vue'
 import { useMapStore } from '@/stores/map.ts'
 import { X } from 'lucide-vue-next'
 
 const mapStore = useMapStore()
 const properties = computed(() => {
-  return mapStore.selectedFeature?.properties
+  return mapStore.selectedFeature ? toRaw(mapStore.selectedFeature).properties : undefined
 })
 
 const displayArea = () => {

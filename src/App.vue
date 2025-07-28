@@ -194,14 +194,19 @@ onMounted(() => {
   }
 
   // Create one single array with all Arten as strings
-  mapStore.artenschirmOptions = Data.Artenschirm.features
-    .map((f: any) =>
-      f.properties.Arten.map((art: Art) => {
-        const artEntries: Array<string> = art[Object.keys(art)[0]]
-        return artEntries
-      }).flat(),
-    )
-    .flat()
+  const artenOptions: Array<string> = []
+  Data.Artenschirm.features.forEach((f: any) =>
+    f.properties.Arten.forEach((art: Art) => {
+      const artEntries: Array<string> = art[Object.keys(art)[0]]
+      artEntries.forEach((entry) => {
+        if (!artenOptions.includes(entry)) {
+          artenOptions.push(entry)
+        }
+      })
+    }),
+  )
+  mapStore.artenOptions = artenOptions
+
   const artenschirmGeojson = createGeojsonForLeaflet(Data.Artenschirm, artenschirmOptions)
   const artenschirmClusterGroup = L.markerClusterGroup({
     iconCreateFunction: function (cluster) {

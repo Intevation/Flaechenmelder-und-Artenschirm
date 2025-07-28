@@ -17,7 +17,7 @@ export const useMapStore = defineStore('geoData', () => {
     },
   })
   const flaechenmelderLebensraumTypenOptions: Ref<Array<string>> = ref([])
-  const artenschirmOptions: Ref<Array<string>> = ref([])
+  const artenOptions: Ref<Array<string>> = ref([])
   const artenschirmFilters = ref({
     arten: [],
     bundeslaender: [],
@@ -143,7 +143,7 @@ export const useMapStore = defineStore('geoData', () => {
     artenschirm,
     artenschirmCluster,
     artenschirmFilters,
-    artenschirmOptions,
+    artenOptions,
     bundeslaender,
     flaechenmelder,
     flaechenmelderCluster,

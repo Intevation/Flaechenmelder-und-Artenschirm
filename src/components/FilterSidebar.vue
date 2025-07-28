@@ -61,7 +61,7 @@ const toggleLayer = (layer: Layer) => {
           "
           :activeFilters="mapStore.artenschirmFilters.arten"
           label="Nach Arten filtern:"
-          :options="mapStore.artenschirmOptions"
+          :options="mapStore.artenOptions"
           placeholder="Trivialer oder lateinischer Name"
         />
         <FilterSearch

@@ -13,6 +13,5 @@ declare module 'vue' {
     ImageCarousel: typeof import('./src/components/ImageCarousel.vue')['default']
     List: typeof import('./src/components/List.vue')['default']
     PopUp: typeof import('./src/components/PopUp.vue')['default']
-    Sidebar: typeof import('./src/components/icons/Sidebar.vue')['default']
   }
 }

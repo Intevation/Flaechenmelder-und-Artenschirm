@@ -45,7 +45,7 @@ export const useMapStore = defineStore('geoData', () => {
     'Thüringen',
   ])
 
-  const fitsToArtenFilter = (properties) => {
+  const fitsToArtenSelection = (properties) => {
     const arten = artenschirmFilters.value.arten
     return (
       arten.length === 0 ||
@@ -54,25 +54,25 @@ export const useMapStore = defineStore('geoData', () => {
   }
 
   const fitsToGeplantFilter = (properties) => {
-    return artenschirmFilters.value.geplant === true || properties.bestehendesProjekt === false
+    return artenschirmFilters.value.geplant === true && properties.bestehendesProjekt === false
   }
 
   const fitsToBestehendFilter = (properties) => {
-    return artenschirmFilters.value.bestehend === true || properties.bestehendesProjekt === true
+    return artenschirmFilters.value.bestehend === true && properties.bestehendesProjekt === true
   }
 
   const fitsToArtenschirmArtenFilter = (properties) => {
-    return artenschirmFilters.value.artenschirmArten === true || properties.Arten?.length > 0
+    return artenschirmFilters.value.artenschirmArten === true && properties.Arten?.length > 0
   }
 
   const fitsToAndereArtenFilter = (properties) => {
-    return artenschirmFilters.value.andereArten === true || properties.artensontiges?.length > 0
+    return artenschirmFilters.value.andereArten === true && properties.artensontiges?.length > 0
   }
 
   const fitsToBundeslandFilter = (properties) => {
     return (
       artenschirmFilters.value.bundeslaender.length === 0 ||
-      (properties.Bundesland &&
+      (properties.Bundesland?.length > 0 &&
         artenschirmFilters.value.bundeslaender.includes(properties.Bundesland))
     )
   }
@@ -100,13 +100,11 @@ export const useMapStore = defineStore('geoData', () => {
   const applyFilters = () => {
     artenschirm.value?.eachLayer((l) => {
       const layer = toRaw(l)
-      const properties = layer.feature.properties
+      const properties = layer.feature.geometry.properties
       if (
-        fitsToArtenFilter(properties) &&
-        fitsToGeplantFilter(properties) &&
-        fitsToBestehendFilter(properties) &&
-        fitsToArtenschirmArtenFilter(properties) &&
-        fitsToAndereArtenFilter(properties) &&
+        fitsToArtenSelection(properties) &&
+        (fitsToGeplantFilter(properties) || fitsToBestehendFilter(properties)) &&
+        (fitsToArtenschirmArtenFilter(properties) || fitsToAndereArtenFilter(properties)) &&
         fitsToBundeslandFilter(properties)
       ) {
         if (artenschirmCluster.value && !artenschirmCluster.value.hasLayer(layer)) {

@@ -110,7 +110,6 @@ export const useMapStore = defineStore('geoData', () => {
         fitsToBundeslandFilter(properties)
       ) {
         if (artenschirmCluster.value && !artenschirmCluster.value.hasLayer(layer)) {
-          console.log(artenschirmCluster.value)
           layer.addTo(toRaw(artenschirmCluster.value))
         }
       } else {

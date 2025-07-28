@@ -26,7 +26,6 @@ const toggleFlaechenmelder = () => {
 
 const toggleLayer = (layer: Layer) => {
   const map = mapStore.map ? toRaw(mapStore.map) : undefined
-  console.log('map', map)
   if (map?.hasLayer(layer)) {
     map.removeLayer(layer)
   } else {

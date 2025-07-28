@@ -54,13 +54,13 @@ const displayArea = () => {
 
       <!-- Artenschirm -->
       <template v-else-if="properties.NameProjekt">
-        <div v-if="properties.PlanStartjahr.trim()">
+        <div v-if="properties.PlanStartjahr?.trim()">
           Geplantes Startjahr: {{ properties.PlanStartjahr }}
         </div>
         <div v-if="properties.Startjahr && properties.Endjahr">
           {{ properties.Startjahr }} - {{ properties.Endjahr }}
         </div>
-        <div v-if="properties.Startjahr2">Seit {{ properties.Startjahr2 }}</div>
+        <div v-if="properties.Startjahr2?.trim()">Seit {{ properties.Startjahr2 }}</div>
         <a v-if="properties.linkProjekt" :href="properties.linkProjekt">
           {{ properties.linkProjekt }}
         </a>
@@ -87,7 +87,7 @@ const displayArea = () => {
                 </div>
               </template>
             </div>
-            <div v-if="properties.artensontiges.trim()" class="arten">
+            <div v-if="properties.artensontiges?.trim()" class="arten">
               <div class="category-name">Sonstige Arten</div>
               <div class="art">
                 {{ properties.artensontiges }}

@@ -66,7 +66,9 @@ const displayArea = () => {
         </a>
         <h3>Ziele</h3>
         <List :list="properties.projektziele" />
-        <template v-if="properties.Arten?.length > 0">
+        <template
+          v-if="properties.Arten?.length > 0 || properties.artensontiges?.trim().length > 0"
+        >
           <h3>Profitierende Arten</h3>
           <div class="arten-container">
             <div

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import type { Ref } from 'vue'
 import { X } from 'lucide-vue-next'
 
 const emit = defineEmits(['updatedFilters'])
@@ -30,7 +29,7 @@ const onClick = () => {
   showSuggestions.value = true
 }
 
-const onKeyDown = (event: any) => {
+const onKeyDown = (event: KeyboardEvent) => {
   if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
     event.preventDefault()
   }

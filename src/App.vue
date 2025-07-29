@@ -2,6 +2,14 @@
 import { onMounted, toRaw, watch } from 'vue'
 import { useMapStore } from '@/stores/map.ts'
 import type { LayerGroup as LayerGroupType } from 'leaflet'
+import type {
+  Art,
+  ArtenschirmFeature,
+  FlaechenmelderFeature,
+  Feature,
+  FeatureCollection,
+  GeojsonOptions,
+} from './types.ts'
 import Data from '../Geo-Daten/Engagement.json'
 import L from 'leaflet'
 import 'leaflet.markercluster'
@@ -10,10 +18,6 @@ import { area } from '@turf/area'
 import '@leaflet/dist/leaflet.css'
 
 const mapStore = useMapStore()
-
-type Art = {
-  [k: string]: Array<string>
-}
 
 const flaechenmelderOptions = {
   initialFillColor: '#99441520',
@@ -60,13 +64,13 @@ watch(
 )
 
 // Create Geojson object from the exported data
-const createGeojsonForLeaflet = (allData, options) => {
+const createGeojsonForLeaflet = (allData: FeatureCollection, options: GeojsonOptions) => {
   // Ignore features without valid geometry data
   const sanitizedData = structuredClone(allData)['features'].filter((f) => {
     return (f.geometries?.length && f.geometries.length > 0) || f.geometry
   })
   return L.geoJSON(sanitizedData, {
-    onEachFeature: (feature, layer: LayerGroupType) => {
+    onEachFeature: (feature: Feature, layer: LayerGroupType) => {
       const isSinglePoint = feature.geometries == undefined
       layer.on('mouseover', () => {
         if (isSinglePoint) {
@@ -122,7 +126,7 @@ const createGeojsonForLeaflet = (allData, options) => {
       })
     },
     pointToLayer: (geoJsonPoint, latlng) => {
-      const marker = new L.circleMarker(latlng, options.markerOptions)
+      const marker = L.circleMarker(latlng, options.markerOptions)
       marker.feature = structuredClone(geoJsonPoint)
       return marker
     },
@@ -152,7 +156,7 @@ const createClusterGroup = (className: string) => {
   clusterGroup.on('clusterclick', (e) => {
     const map = toRaw(mapStore.map)
     const children = e.layer.getAllChildMarkers()
-    if (map.getZoom() === map.getMaxZoom()) {
+    if (map && map.getZoom() === map.getMaxZoom()) {
       const container = document.createElement('div')
       container.classList.add('popup-container')
       children.forEach((c) => {
@@ -164,10 +168,7 @@ const createClusterGroup = (className: string) => {
         container.appendChild(button)
       })
 
-      const popup = L.popup({
-        opacity: 1,
-        permanent: true,
-      })
+      const popup = L.popup()
       popup.setLatLng(e.latlng)
       popup.setContent(container)
       popup.openOn(map)
@@ -178,7 +179,7 @@ const createClusterGroup = (className: string) => {
 
 const addFlaechenmelderData = () => {
   const lebensraumTypen: string[] = []
-  Data.Flaechenmelder.features.forEach((f) => {
+  Data.Flaechenmelder.features.forEach((f: FlaechenmelderFeature) => {
     // Collect Lebensraumtypen to show them as options in dropdown
     structuredClone(f).properties.Lebensraumtypen.forEach((t) => {
       if (!lebensraumTypen.includes(t)) {
@@ -190,9 +191,9 @@ const addFlaechenmelderData = () => {
     const polygon = f.geometries?.find((g) => g.type === 'Polygon')
     if (polygon) {
       if (f.properties.Groesse) {
-        f.properties.Groesse = Number(f.properties.Groesse.replace(',', '.'))
+        f.properties.Groesse = f.properties.Groesse.replace(',', '.')
       } else {
-        f.properties.areaSizeInHa = area(polygon) / 10000
+        f.properties.areaSizeInHa = `${area(polygon) / 10000}`
       }
     }
   })
@@ -227,16 +228,19 @@ onMounted(() => {
 
   // Create one single array with all Arten as strings
   const artenOptions: Array<string> = []
-  Data.Artenschirm.features.forEach((f: any) =>
+  Data.Artenschirm.features.forEach((f: ArtenschirmFeature) => {
     f.properties.Arten.forEach((art: Art) => {
-      const artEntries: Array<string> = art[Object.keys(art)[0]]
-      artEntries.forEach((entry) => {
-        if (!artenOptions.includes(entry)) {
-          artenOptions.push(entry)
-        }
-      })
-    }),
-  )
+      const artKey: string = Object.keys(art)[0]
+      if (art[artKey]) {
+        const artEntries: Array<string> = art[artKey]
+        artEntries.forEach((entry) => {
+          if (!artenOptions.includes(entry)) {
+            artenOptions.push(entry)
+          }
+        })
+      }
+    })
+  })
   mapStore.artenOptions = artenOptions
 
   const artenschirmGeojson = createGeojsonForLeaflet(Data.Artenschirm, artenschirmOptions)

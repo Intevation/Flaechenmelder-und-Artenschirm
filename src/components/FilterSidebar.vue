@@ -55,7 +55,7 @@ const toggleLayer = (layer: Layer) => {
         </label>
         <FilterSearch
           @updatedFilters="
-            (event) => {
+            (event: string[] | boolean) => {
               mapStore.setArtenFilter('arten', event)
             }
           "
@@ -66,7 +66,7 @@ const toggleLayer = (layer: Layer) => {
         />
         <FilterSearch
           @updatedFilters="
-            (event) => {
+            (event: string[] | boolean) => {
               mapStore.setArtenFilter('bundeslaender', event)
             }
           "
@@ -110,7 +110,7 @@ const toggleLayer = (layer: Layer) => {
         </label>
         <FilterSearch
           @updatedFilters="
-            (event) => {
+            (event: string[]) => {
               mapStore.flaechenmelderFilters.lebensraumtypen = event
             }
           "

@@ -100,7 +100,7 @@ export const useMapStore = defineStore('geoData', () => {
   const applyFilters = () => {
     artenschirm.value?.eachLayer((l) => {
       const layer = toRaw(l)
-      const properties = layer.feature.geometry.properties
+      const properties = layer.feature.properties ?? layer.feature.geometry.properties
       if (
         fitsToArtenSelection(properties) &&
         (fitsToGeplantFilter(properties) || fitsToBestehendFilter(properties)) &&
@@ -117,7 +117,7 @@ export const useMapStore = defineStore('geoData', () => {
 
     flaechenmelder.value?.eachLayer((l) => {
       const layer = toRaw(l)
-      const properties = layer.feature.geometry.properties
+      const properties = layer.feature.properties ?? layer.feature.geometry.properties
       if (fitsToLebensraumFilter(properties) && fitsToSizeFilter(properties)) {
         if (flaechenmelderCluster.value && !flaechenmelderCluster.value.hasLayer(layer)) {
           layer.addTo(toRaw(flaechenmelderCluster.value))

@@ -132,6 +132,22 @@ const createGeojsonForLeaflet = (allData, options) => {
   })
 }
 
+const createClusterGroup = (className: string) => {
+  return L.markerClusterGroup({
+    iconCreateFunction: function (cluster) {
+      const count = cluster.getChildCount()
+      const width = 14 + `${count}`.length * 3
+      return L.divIcon({
+        className: `${className} cluster-div-icon`,
+        html: '<b>' + count + '</b>',
+        iconSize: self.L.point(width, width),
+      })
+    },
+    maxClusterRadius: 20,
+    showCoverageOnHover: false,
+  })
+}
+
 const addFlaechenmelderData = () => {
   const lebensraumTypen: string[] = []
   Data.Flaechenmelder.features.forEach((f) => {
@@ -155,19 +171,7 @@ const addFlaechenmelderData = () => {
   mapStore.flaechenmelderLebensraumTypenOptions = lebensraumTypen
 
   const flaechenmelderGeojson = createGeojsonForLeaflet(Data.Flaechenmelder, flaechenmelderOptions)
-  const flaechenmelderClusterGroup = L.markerClusterGroup({
-    iconCreateFunction: function (cluster) {
-      const count = cluster.getChildCount()
-      const width = 14 + `${count}`.length * 3
-      return L.divIcon({
-        className: 'flaechenmelder cluster-div-icon',
-        html: '<b>' + count + '</b>',
-        iconSize: self.L.point(width, width),
-      })
-    },
-    maxClusterRadius: 20,
-    showCoverageOnHover: false,
-  })
+  const flaechenmelderClusterGroup = createClusterGroup('flaechenmelder')
   flaechenmelderClusterGroup.addLayer(flaechenmelderGeojson)
   toRaw(mapStore.map).addLayer(flaechenmelderClusterGroup)
   mapStore.flaechenmelderCluster = flaechenmelderClusterGroup
@@ -208,19 +212,7 @@ onMounted(() => {
   mapStore.artenOptions = artenOptions
 
   const artenschirmGeojson = createGeojsonForLeaflet(Data.Artenschirm, artenschirmOptions)
-  const artenschirmClusterGroup = L.markerClusterGroup({
-    iconCreateFunction: function (cluster) {
-      const count = cluster.getChildCount()
-      const width = 14 + `${count}`.length * 3
-      return L.divIcon({
-        className: 'artenschirm cluster-div-icon',
-        html: '<b>' + count + '</b>',
-        iconSize: self.L.point(width, width),
-      })
-    },
-    maxClusterRadius: 20,
-    showCoverageOnHover: false,
-  })
+  const artenschirmClusterGroup = createClusterGroup('artenschirm')
   artenschirmClusterGroup.addLayer(artenschirmGeojson)
   map.addLayer(artenschirmClusterGroup)
   mapStore.artenschirmCluster = artenschirmClusterGroup

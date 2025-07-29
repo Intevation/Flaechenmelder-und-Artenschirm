@@ -122,7 +122,9 @@ const createGeojsonForLeaflet = (allData, options) => {
       })
     },
     pointToLayer: (geoJsonPoint, latlng) => {
-      return new L.circleMarker(latlng, options.markerOptions)
+      const marker = new L.circleMarker(latlng, options.markerOptions)
+      marker.feature = structuredClone(geoJsonPoint)
+      return marker
     },
     fillColor: options.initialFillColor,
     color: '#991111',
@@ -133,19 +135,45 @@ const createGeojsonForLeaflet = (allData, options) => {
 }
 
 const createClusterGroup = (className: string) => {
-  return L.markerClusterGroup({
+  const clusterGroup = L.markerClusterGroup({
     iconCreateFunction: function (cluster) {
       const count = cluster.getChildCount()
       const width = 14 + `${count}`.length * 3
       return L.divIcon({
         className: `${className} cluster-div-icon`,
         html: '<b>' + count + '</b>',
-        iconSize: self.L.point(width, width),
+        iconSize: L.point(width, width),
       })
     },
     maxClusterRadius: 20,
     showCoverageOnHover: false,
+    spiderfyOnMaxZoom: false,
   })
+  clusterGroup.on('clusterclick', (e) => {
+    const map = toRaw(mapStore.map)
+    const children = e.layer.getAllChildMarkers()
+    if (map.getZoom() === map.getMaxZoom()) {
+      const container = document.createElement('div')
+      container.classList.add('popup-container')
+      children.forEach((c) => {
+        const button = document.createElement('button')
+        button.textContent = c.feature.properties.NameProjekt || c.feature.properties.Flaechenname
+        button.addEventListener('click', () => {
+          mapStore.selectedFeature = c.feature
+        })
+        container.appendChild(button)
+      })
+
+      const popup = L.popup({
+        opacity: 1,
+        permanent: true,
+      })
+      popup.setLatLng(e.latlng)
+      popup.setContent(container)
+      popup.openOn(map)
+    }
+  })
+  return clusterGroup
 }
 
 const addFlaechenmelderData = () => {
@@ -254,5 +282,24 @@ main {
 
 .flaechenmelder.cluster-div-icon {
   background-color: #e18432;
+}
+
+.popup-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.popup-container button {
+  min-width: fit-content;
+  width: 100%;
+  height: max-content;
+  text-align: left;
+  border: none;
+}
+
+.popup-container button:not(:last-child) {
+  border-bottom: 1pt solid #bbb;
 }
 </style>

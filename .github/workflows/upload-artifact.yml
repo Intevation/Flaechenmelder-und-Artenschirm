@@ -25,7 +25,10 @@ jobs:
       - name: Build with Vite
         run: npm run build
 
+      - name: Zip build files
+        run: zip -r artenschirm-flaechenmelder-karte.zip
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          path: ./dist
+          path: artenschirm-flaechenmelder-karte.zip

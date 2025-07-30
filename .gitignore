@@ -29,4 +29,5 @@ coverage
 
 *.tsbuildinfo
 
-Geo-Daten
+public/Geo-Daten/*
+!public/Geo-Daten/.gitkeep

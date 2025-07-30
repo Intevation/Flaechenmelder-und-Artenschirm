@@ -40,6 +40,10 @@ button:hover {
   background-color: #f4f4f4;
 }
 
+.carousel button {
+  min-height: unset;
+}
+
 @media (prefers-reduced-motion) {
   * {
     transition: none !important;

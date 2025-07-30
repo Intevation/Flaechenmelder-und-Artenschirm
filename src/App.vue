@@ -10,7 +10,6 @@ import type {
   FeatureCollection,
   GeojsonOptions,
 } from './types.ts'
-import Data from '../Geo-Daten/Engagement.json'
 import L from 'leaflet'
 import 'leaflet.markercluster'
 import { area } from '@turf/area'
@@ -177,7 +176,7 @@ const createClusterGroup = (className: string) => {
   return clusterGroup
 }
 
-const addFlaechenmelderData = () => {
+const addFlaechenmelderData = (Data) => {
   const lebensraumTypen: string[] = []
   Data.Flaechenmelder.features.forEach((f: FlaechenmelderFeature) => {
     // Collect Lebensraumtypen to show them as options in dropdown
@@ -207,7 +206,9 @@ const addFlaechenmelderData = () => {
   mapStore.flaechenmelder = flaechenmelderGeojson
 }
 
-onMounted(() => {
+onMounted(async () => {
+  const response = await fetch('Geo-Daten/Engagement.json')
+  const Data = await response.json()
   const map = L.map('map', {
     zoomControl: false,
   }).setView([51.505, 10.09], 6)
@@ -223,7 +224,7 @@ onMounted(() => {
   zoomControl.addTo(map)
 
   if (Data.Flaechenmelder) {
-    addFlaechenmelderData()
+    addFlaechenmelderData(Data)
   }
 
   // Create one single array with all Arten as strings

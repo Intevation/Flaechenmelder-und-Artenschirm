@@ -113,12 +113,12 @@ export const useMapStore = defineStore('geoData', () => {
     const sizeString =
       properties.Groesse && properties.Groesse !== '' ? properties.Groesse : properties.areaSizeInHa
     if (sizeString === undefined) return false
-    const filterSize = flaechenmelderFilters.value.size
-    const size = Number(sizeString.replace('.', ','))
+    const filterSize = toRaw(flaechenmelderFilters.value.size)
+    const size = Number(sizeString.replace(',', '.'))
     return (
-      (size < 10 && filterSize.small) ||
-      (size > 10 && size < 50 && filterSize.medium) ||
-      (size > 50 && filterSize.big)
+      (size <= 10 && filterSize.small) ||
+      (size >= 10 && size <= 50 && filterSize.medium) ||
+      (size >= 50 && filterSize.big)
     )
   }
 
